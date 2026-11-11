@@ -19,7 +19,7 @@ from PyQa40x.wave_sine import WaveSine
 #
 
 LEFT_FREQ = 1000    # Hz, played on the left output
-RIGHT_FREQ = 3000   # Hz, played on the right output
+RIGHT_FREQ = 4500   # Hz, played on the right output. Not a harmonic of LEFT_FREQ, so crosstalk and distortion stay distinguishable
 LEVEL_DBV = -10     # Level of both tones
 
 analyzer = Analyzer()

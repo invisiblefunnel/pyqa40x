@@ -4,3 +4,4 @@
 *.sqlite
 *.vsidx
 .vs/
+LibTest/loopback_check.png
