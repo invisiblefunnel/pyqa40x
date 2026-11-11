@@ -6,3 +6,4 @@
 .vs/
 LibTest/loopback_check.png
 *.egg-info/
+/output*.png
