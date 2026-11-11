@@ -1,7 +1,18 @@
-import pyaudio # pip install pyaudio
+try:
+    import pyaudio  # pip install pyaudio
+except ImportError:
+    # pyaudio is only needed for Bluetooth playback. Keep it optional so the
+    # analyzer can be used over USB without PortAudio installed.
+    pyaudio = None
 import threading
 import numpy as np
 from PyQa40x.wave import Wave
+
+
+def _require_pyaudio():
+    """Raise a clear error if the optional pyaudio dependency is missing."""
+    if pyaudio is None:
+        raise ImportError("Bluetooth audio requires pyaudio. Install it with: pip install pyaudio")
 
 class BluetoothAudioDevice:
     def __init__(self, device_name: str, sample_rate: int, debug: bool = False):
@@ -17,6 +28,7 @@ class BluetoothAudioDevice:
         self.sample_rate = sample_rate
         self.debug = debug
         self.device_index = None
+        _require_pyaudio()
         self.p = pyaudio.PyAudio()
 
         # Attempt to find and open the device
@@ -105,6 +117,7 @@ class BluetoothAudioDevice:
     @staticmethod
     def list_audio_devices():
         """List all available audio devices by name."""
+        _require_pyaudio()
         p = pyaudio.PyAudio()
         print("Available audio devices:\n")
         for i in range(p.get_device_count()):
@@ -115,6 +128,7 @@ class BluetoothAudioDevice:
     @staticmethod
     def list_audio_devices_by_sample_rate(target_sample_rate: int):
         """List all available audio devices that support a specific sample rate."""
+        _require_pyaudio()
         p = pyaudio.PyAudio()
         print(f"Audio devices supporting {target_sample_rate} Hz sample rate:\n")
         for i in range(p.get_device_count()):

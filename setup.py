@@ -14,6 +14,10 @@ setup(
         'scipy',
         'libusb1'
     ],
+    extras_require={
+        # Only needed to mirror playback to a Bluetooth/system audio device
+        'bluetooth': ['pyaudio'],
+    },
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
