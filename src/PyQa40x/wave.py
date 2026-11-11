@@ -197,7 +197,7 @@ class Wave:
         float: The THDN of the signal in the specified unit.
         """
         self.compute_fft_if_needed()
-        thdn_linear = ms.compute_thdn_linear(self.fft_plot_signal, self.get_frequency_array(), fundamental, notch_octaves, start_freq, stop_freq, debug)
+        thdn_linear = ms.compute_thdn_linear(self.fft_energy_signal, self.get_frequency_array(), fundamental, notch_octaves, start_freq, stop_freq, debug)
 
         if unit is None:
             unit = self.distortion_unit
