@@ -38,15 +38,19 @@ def verify_trace_within_mask(
     min_mask: np.ndarray
 ) -> bool:
     """
-    Checks if value_trace is within mask at each freq in freq_mask.
+    Checks if value_trace is within mask over the frequency range the mask covers.
+    Trace points outside that range are ignored: the mask says nothing about them,
+    and above the chirp's stop frequency the relative response is only noise.
     Returns: True if all within mask, else False
     """
-    max_interp = interp1d(freq_mask, max_mask, bounds_error=False, fill_value="extrapolate")
-    min_interp = interp1d(freq_mask, min_mask, bounds_error=False, fill_value="extrapolate")
-    max_vals = max_interp(freq_trace)
-    min_vals = min_interp(freq_trace)
+    in_range = np.logical_and(freq_trace >= np.min(freq_mask), freq_trace <= np.max(freq_mask))
+    freq_trace = freq_trace[in_range]
+    value_trace = value_trace[in_range]
+
+    max_vals = interp1d(freq_mask, max_mask)(freq_trace)
+    min_vals = interp1d(freq_mask, min_mask)(freq_trace)
     within = np.logical_and(value_trace <= max_vals, value_trace >= min_vals)
-    return np.all(within)
+    return bool(np.all(within))
 
 
 # ---------- Main ----------
