@@ -87,14 +87,25 @@ class Analyzer:
     def cleanup(self):
         """
         Releases the USB device interface and closes the context.
+
+        Safe to call more than once: init() also registers this with atexit, so a
+        script that calls cleanup() explicitly would otherwise touch the already
+        closed libusb handle again at interpreter exit and crash.
         """
+        device, context, bt_device = self.device, self.context, self.bt_device
+        self.device = None
+        self.context = None
+        self.bt_device = None
+        atexit.unregister(self.cleanup)
+
         try:
-            if self.device:
-                self.device.releaseInterface(0)
-            if self.context:
-                self.context.close()
-            if self.bt_device:
-                self.bt_device.close()
+            if device:
+                device.releaseInterface(0)
+                device.close()
+            if context:
+                context.close()
+            if bt_device:
+                bt_device.close()
         except Exception as e:
             print(f"An error occurred during cleanup: {e}")
 
